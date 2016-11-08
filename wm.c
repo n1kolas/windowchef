@@ -1683,26 +1683,24 @@ event_map_request(xcb_generic_event_t *ev)
 
 	/* create window if new */
 	client = find_client(&e->window);
+	client = setup_window(e->window);
+
 	if (client == NULL) {
-		client = setup_window(e->window);
-
-		if (!client->geom.set_by_user) {
-			if (!get_pointer_location(&scr->root, &client->geom.x, &client->geom.y))
-				client->geom.x = client->geom.y = 0;
-
-			client->geom.x -= client->geom.width / 2;
-			client->geom.y -= client->geom.height / 2;
-			teleport_window(client->window, client->geom.x, client->geom.y);
-		}
-		if (conf.sticky_windows)
-			group_add_window(client, last_group);
+		return;
 	}
 
-	xcb_map_window(conn, e->window);
+	if (!client->geom.set_by_user) {
+		if (!get_pointer_location(&scr->root, &client->geom.x, &client->geom.y))
+			client->geom.x = client->geom.y = 0;
 
-	/* in case of fire, abort */
-	if (client == NULL)
-		return;
+		client->geom.x -= client->geom.width / 2;
+		client->geom.y -= client->geom.height / 2;
+		teleport_window(client->window, client->geom.x, client->geom.y);
+	}
+	if (conf.sticky_windows)
+		group_add_window(client, last_group);
+
+	xcb_map_window(conn, e->window);
 
 	if (randr_base != -1) {
 		client->monitor = find_monitor_by_coord(client->geom.x, client->geom.y);
