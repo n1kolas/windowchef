@@ -48,3 +48,6 @@ super + {Insert,Prior,Delete,Next,End}
 
 super + {_,alt +}t
   ./waitron mouse_toggle {move,resize}
+
+super + {Left, Right}
+  ./waitron window_send_monitor {left, right}
