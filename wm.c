@@ -2284,12 +2284,6 @@ ipc_window_send_monitor(uint32_t *d)
 			return;
 	}
 
-	// focused-win->monitor->x.
-	// focused-win->monitor->y.
-	//
-	// 	win_x = mon_x + (mon_w - win_w) / 2;
-			win_y = mon_y + (mon_h - win_h) / 2;
-
 	win_x = focused_win->monitor->x + (focused_win->monitor->width - win_w) / 2;
 	win_y = focused_win->monitor->y + (focused_win->monitor->height - win_h) / 2;
 
