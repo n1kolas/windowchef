@@ -136,6 +136,7 @@ static void ipc_window_monocle(uint32_t *);
 static void ipc_window_unmaximize(uint32_t *);
 static void ipc_window_close(uint32_t *);
 static void ipc_window_put_in_grid(uint32_t *);
+static void ipc_window_send_monitor(uint32_t *);
 static void ipc_window_snap(uint32_t *);
 static void ipc_window_cycle(uint32_t *);
 static void ipc_window_rev_cycle(uint32_t *);
@@ -1972,6 +1973,7 @@ register_ipc_handlers(void)
 	ipc_handlers[IPCWindowMonocle]         = ipc_window_monocle;
 	ipc_handlers[IPCWindowClose]           = ipc_window_close;
 	ipc_handlers[IPCWindowPutInGrid]       = ipc_window_put_in_grid;
+	ipc_handlers[IPCWindowSendMonitor]     = ipc_window_send_monitor;
 	ipc_handlers[IPCWindowSnap]            = ipc_window_snap;
 	ipc_handlers[IPCWindowCycle]           = ipc_window_cycle;
 	ipc_handlers[IPCWindowRevCycle]        = ipc_window_rev_cycle;
@@ -2236,6 +2238,40 @@ ipc_window_put_in_grid(uint32_t *d)
 	teleport_window(focused_win->window, focused_win->geom.x, focused_win->geom.y);
 	resize_window_absolute(focused_win->window, focused_win->geom.width, focused_win->geom.height);
 
+	xcb_flush(conn);
+}
+
+static void
+ipc_window_send_monitor(uint32_t *d)
+{
+	uint32_t direction = d[0];
+	int16_t mon_x, mon_y, win_x, win_y;
+	uint16_t mon_w, mon_h, win_w, win_h;
+
+	if (focused_win == NULL)
+		return;
+
+	win_x = focused_win->geom.x;
+	win_y = focused_win->geom.y;
+	win_w = focused_win->geom.width + 2 * conf.border_width;
+	win_h = focused_win->geom.height + 2 * conf.border_width;
+
+	get_monitor_size(focused_win, &mon_x, &mon_y, &mon_w, &mon_h);
+
+	switch (direction) {
+		case LEFT:
+			focused_win->monitor = focused_win->monitor->item->prev->data;
+			break;
+
+		case RIGHT:
+			focused_win->monitor = focused_win->monitor->item->next->data;
+			break;
+
+		default:
+			return;
+	}
+
+	fit_on_screen(focused_win);
 	xcb_flush(conn);
 }
 

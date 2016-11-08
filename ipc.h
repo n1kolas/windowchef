@@ -19,6 +19,7 @@ enum IPCCommand {
 	IPCWindowMonocle,
 	IPCWindowClose,
 	IPCWindowPutInGrid,
+	IPCWindowSendMonitor,
 	IPCWindowSnap,
 	IPCWindowCycle,
 	IPCWindowRevCycle,
