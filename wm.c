@@ -2263,11 +2263,21 @@ ipc_window_send_monitor(uint32_t *d)
 
 	switch (direction) {
 		case LEFT:
+			if (focused_win->monitor->item->prev == NULL) {
+				return;
+			}
 			focused_win->monitor = focused_win->monitor->item->prev->data;
 			break;
 
 		case RIGHT:
-			focused_win->monitor = focused_win->monitor->item->next->data;
+			if (focused_win->monitor->item->next == NULL) {
+				while (focused_win->monitor->item->prev != NULL) {
+					focused_win->monitor = focused_win->monitor->item->prev->data;
+				}
+			}
+			else {
+				focused_win->monitor = focused_win->monitor->item->next->data;
+			}
 			break;
 
 		default:
