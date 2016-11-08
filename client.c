@@ -51,7 +51,7 @@ static struct Command c[] = {
 	{ "window_close"              , IPCWindowClose           ,  0 , NULL        } ,
 	{ "window_put_in_grid"        , IPCWindowPutInGrid       ,  4 , fn_naturals } ,
 	{ "window_snap"               , IPCWindowSnap            ,  1 , fn_position } ,
-	{ "window_send_monitor"       , IPCWindowSendMonitor     ,  1 , fn_position} ,
+	{ "window_send_monitor"       , IPCWindowSendMonitor     ,  1 , fn_position } ,
 	{ "window_cycle"              , IPCWindowCycle           ,  0 , NULL        } ,
 	{ "window_rev_cycle"          , IPCWindowRevCycle        ,  0 , NULL        } ,
 	{ "window_cycle_in_group"     , IPCWindowCycleInGroup    ,  0 , NULL        } ,
