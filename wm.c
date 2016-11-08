@@ -2247,6 +2247,7 @@ ipc_window_send_monitor(uint32_t *d)
 	uint32_t direction = d[0];
 	int16_t mon_x, mon_y, win_x, win_y;
 	uint16_t mon_w, mon_h, win_w, win_h;
+	struct monitor *old_mon;
 
 	if (focused_win == NULL)
 		return;
@@ -2255,6 +2256,8 @@ ipc_window_send_monitor(uint32_t *d)
 	win_y = focused_win->geom.y;
 	win_w = focused_win->geom.width + 2 * conf.border_width;
 	win_h = focused_win->geom.height + 2 * conf.border_width;
+
+	old_mon = focused_win->monitor;
 
 	get_monitor_size(focused_win, &mon_x, &mon_y, &mon_w, &mon_h);
 
@@ -2271,7 +2274,20 @@ ipc_window_send_monitor(uint32_t *d)
 			return;
 	}
 
-	fit_on_screen(focused_win);
+	// focused-win->monitor->x.
+	// focused-win->monitor->y.
+	//
+	// 	win_x = mon_x + (mon_w - win_w) / 2;
+			win_y = mon_y + (mon_h - win_h) / 2;
+
+	win_x = focused_win->monitor->x + (focused_win->monitor->width - win_w) / 2;
+	win_y = focused_win->monitor->y + (focused_win->monitor->height - win_h) / 2;
+
+	focused_win->geom.x = win_x;
+	focused_win->geom.y = win_y;
+
+	teleport_window(focused_win->window, win_x, win_y);
+	center_pointer(focused_win);
 	xcb_flush(conn);
 }
 
