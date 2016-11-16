@@ -113,6 +113,7 @@ static void mouse_start(enum mouse_mode);
 static void mouse_stop(void);
 static void mouse_toggle(enum mouse_mode);
 static void register_event_handlers(void);
+static void event_button_press(xcb_generic_event_t *);
 static void event_configure_request(xcb_generic_event_t *);
 static void event_destroy_notify(xcb_generic_event_t *);
 static void event_enter_notify(xcb_generic_event_t *);
@@ -1530,6 +1531,7 @@ register_event_handlers(void)
 	for (int i = 0; i <= LAST_XCB_EVENT; i++)
 		events[i] = NULL;
 
+	events[XCB_BUTTON_PRESS]      = event_button_press;
 	events[XCB_CONFIGURE_REQUEST] = event_configure_request;
 	events[XCB_DESTROY_NOTIFY]    = event_destroy_notify;
 	events[XCB_ENTER_NOTIFY]      = event_enter_notify;
@@ -1541,6 +1543,26 @@ register_event_handlers(void)
 	events[XCB_CIRCULATE_REQUEST] = event_circulate_request;
 	events[XCB_FOCUS_OUT]         = event_focus_out;
 	events[XCB_MOTION_NOTIFY]     = event_motion_notify;
+}
+
+/*
+ * A button is pressed.
+ */
+static void
+event_button_press(xcb_generic_event_t *ev)
+{
+	xcb_button_press_event_t *e = (xcb_button_press_event_t *)ev;
+	unsigned int i;
+
+	for (i=0; i<LENGTH(buttons); i++)
+		if (buttons[i].func && buttons[i].button == e->detail
+				&& CLEANMASK(buttons[i].mask)
+				== CLEANMASK(e->state)){
+			if ((focused_win==NULL) && buttons[i].func == mousemotion)
+				return;
+
+			buttons[i].func(&(buttons[i].arg));
+		}
 }
 
 /*
