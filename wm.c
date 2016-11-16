@@ -1557,7 +1557,7 @@ event_button_press(xcb_generic_event_t *ev)
 		if (buttons[i].func && buttons[i].button == e->detail
 				&& CLEANMASK(buttons[i].mask)
 				== CLEANMASK(e->state)){
-			if ((focuswin==NULL) && buttons[i].func == mousemotion)
+			if ((focused_win==NULL) && buttons[i].func == mousemotion)
 				return;
 
 			buttons[i].func(&(buttons[i].arg));
