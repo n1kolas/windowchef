@@ -537,13 +537,19 @@ mousemotion(const Arg *arg)
 				// 	mousemove(winx + ev->root_x - mx, winy + ev->root_y - my);
 			}
 			else {
-				if (!(
-					(winx + ev->root_x - mx) < (focused_win->monitor->x + conf.gap_left)
-					|| (winx + ev->root_x - mx) > (focused_win->monitor->x + focused_win->monitor->width - conf.gap_right)
-					|| (winy + ev->root_y - my) < (focused_win->monitor->y + conf.gap_up)
-					|| (winy + ev->root_y - my) > (focused_win->monitor->y + focused_win->monitor->height - conf.gap_down)
-					))
+				bool x_allowed, y_allowed;
+				x_allowed = (winx + winw + ev->root_x - mx < focused_win->monitor->x + focused_win->monitor->width - conf.gap_right);
+				y_allowed = (winy + winh + ev->root_y - my < focused_win->monitor->y + focused_win->monitor->height - conf.gap_down);
+
+				if (x_allowed && y_allowed)
 					mouseresize(focused_win, winw + ev->root_x - mx,
+						winh + ev->root_y - my);
+				else
+					if (x_allowed && !y_allowed)
+						mouseresize(focused_win, winw + ev->root_x - mx,
+						focused_win->geom.height);
+					if (!x_allowed && y_allowed)
+						mouseresize(focused_win, focused_win->geom.width,
 						winh + ev->root_y - my);
 			}
 
