@@ -24,6 +24,8 @@ enum mouse_mode {
 	MOUSE_RESIZE,
 };
 
+enum {WC_MOVE,WC_RESIZE};
+
 struct window_geom {
 	int16_t x, y;
 	uint16_t width, height;
@@ -61,4 +63,20 @@ struct conf {
 	bool sticky_windows;
 };
 
+typedef union {
+	const char** com;
+	const int8_t i;
+} Arg;
+
+typedef struct {
+	unsigned int mask, button;
+	void (*func)(const Arg *);
+	const Arg arg;
+} Button;
 #endif
+
+#define BUTTONMASK      XCB_EVENT_MASK_BUTTON_PRESS|XCB_EVENT_MASK_BUTTON_RELEASE
+
+#define LENGTH(x)       (sizeof(x)/sizeof(*x))
+#define MIN(X, Y)       ((X) < (Y) ? (X) : (Y))
+#define CLEANMASK(mask) (mask & ~(XCB_MOD_MASK_LOCK))
