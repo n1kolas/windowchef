@@ -163,6 +163,11 @@ static void usage(char *);
 static void load_defaults(void);
 static void load_config(char *);
 
+static Button buttons[] = {
+  {  XCB_MOD_MASK_1        ,XCB_BUTTON_INDEX_1,     mousemotion,   {.i=WC_MOVE}},
+  {  XCB_MOD_MASK_1        ,XCB_BUTTON_INDEX_3,     mousemotion,   {.i=WC_RESIZE}},
+};
+
 /*
  * Gracefully disconnect.
  */
@@ -432,7 +437,7 @@ mouseresize(struct client *client, const int16_t rel_x, const int16_t rel_y)
 	client->geom.width  = abs(rel_x);
 	client->geom.height = abs(rel_y);
 
-	resize_window(client->window, rel_x, rel_y);
+	resize_window_absolute(client->window, rel_x, rel_y);
 	client->vmaxed = false;
 	client->hmaxed  = false;
 }
@@ -463,15 +468,15 @@ mousemotion(const Arg *arg)
 	winh = focused_win->geom.height;
 
 	xcb_cursor_t cursor;
-	struct client *example;
+	// struct client example;
 	raise_window(focused_win->window);
 
-	if(arg->i == TWOBWM_MOVE)
+	if(arg->i == WC_MOVE)
 		cursor = Create_Font_Cursor(conn, 52 ); /* fleur */
 	else {
 		cursor  = Create_Font_Cursor(conn, 120); /* sizing */
-		*example = create_back_win();
-		xcb_map_window(conn,example->window);
+		// example = create_back_win();
+		// xcb_map_window(conn,example.window);
 	}
 
 	grab_reply = xcb_grab_pointer_reply(conn, xcb_grab_pointer(conn, 0,
@@ -484,8 +489,8 @@ mousemotion(const Arg *arg)
 	if (grab_reply->status != XCB_GRAB_STATUS_SUCCESS) {
 		free(grab_reply);
 
-		if (arg->i == TWOBWM_RESIZE)
-			xcb_unmap_window(conn,example->window);
+		// if (arg->i == WC_RESIZE)
+		// 	xcb_unmap_window(conn,example.window);
 
 		return;
 	}
@@ -507,12 +512,11 @@ mousemotion(const Arg *arg)
 			break;
 		case XCB_MOTION_NOTIFY:
 			ev = (xcb_motion_notify_event_t*)e;
-			if (arg->i == TWOBWM_MOVE) {
+			if (arg->i == WC_MOVE) {
 				mousemove(winx + ev->root_x - mx, winy + ev->root_y - my);
 			}
 			else {
-				return;
-				mouseresize(example, winw + ev->root_x - mx,
+				mouseresize(focused_win, winw + ev->root_x - mx,
 						winh + ev->root_y - my);
 			}
 
@@ -522,14 +526,14 @@ mousemotion(const Arg *arg)
 		case XCB_KEY_RELEASE:
 		case XCB_BUTTON_PRESS:
 		case XCB_BUTTON_RELEASE:
-			if (arg->i==TWOBWM_RESIZE) {
-				ev = (xcb_motion_notify_event_t*)e;
+			// if (arg->i==WC_RESIZE) {
+			// 	ev = (xcb_motion_notify_event_t*)e;
 
-				mouseresize(focused_win, winw + ev->root_x - mx,
-						winh + ev->root_y - my);
+			// 	mouseresize(focused_win, winw + ev->root_x - mx,
+			// 			winh + ev->root_y - my);
 
-				set_borders(focused_win, conf.focus_color);
-			}
+			// 	set_borders(focused_win, conf.focus_color);
+			// }
 
 			ungrab = true;
 			break;
@@ -541,32 +545,10 @@ mousemotion(const Arg *arg)
 	xcb_free_cursor(conn,cursor);
 	xcb_ungrab_pointer(conn, XCB_CURRENT_TIME);
 
-	if (arg->i == TWOBWM_RESIZE)
-		xcb_unmap_window(conn,example->window);
+	// if (arg->i == WC_RESIZE)
+	// 	xcb_unmap_window(conn,example.window);
 
 	xcb_flush(conn);
-}
-
-static Button buttons[] = {
-    {  XCB_MOD_MASK_1        ,XCB_BUTTON_INDEX_1,     mousemotion,   {.i=TWOBWM_MOVE}},
-    {  XCB_MOD_MASK_1        ,XCB_BUTTON_INDEX_3,     mousemotion,   {.i=TWOBWM_RESIZE}},
-};
-
-void
-buttonpress(xcb_generic_event_t *ev)
-{
-	xcb_button_press_event_t *e = (xcb_button_press_event_t *)ev;
-	unsigned int i;
-
-	for (i=0; i<LENGTH(buttons); i++)
-		if (buttons[i].func && buttons[i].button == e->detail
-				&& CLEANMASK(buttons[i].mask)
-				== CLEANMASK(e->state)){
-			if ((focused_win==NULL) && buttons[i].func == mousemotion)
-				return;
-
-			buttons[i].func(&(buttons[i].arg));
-		}
 }
 
 /*
@@ -1806,7 +1788,7 @@ event_button_press(xcb_generic_event_t *ev)
 		if (buttons[i].func && buttons[i].button == e->detail
 				&& CLEANMASK(buttons[i].mask)
 				== CLEANMASK(e->state)){
-			if ((focused_win==NULL) && buttons[i].func == mousemotion)
+			if ((focused_win == NULL) && buttons[i].func == mousemotion)
 				return;
 
 			buttons[i].func(&(buttons[i].arg));

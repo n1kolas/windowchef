@@ -24,6 +24,8 @@ enum mouse_mode {
 	MOUSE_RESIZE,
 };
 
+enum {WC_MOVE,WC_RESIZE};
+
 struct window_geom {
 	int16_t x, y;
 	uint16_t width, height;
@@ -73,7 +75,6 @@ typedef struct {
 } Button;
 #endif
 
-enum {TWOBWM_MOVE,TWOBWM_RESIZE};
 #define BUTTONMASK      XCB_EVENT_MASK_BUTTON_PRESS|XCB_EVENT_MASK_BUTTON_RELEASE
 
 #define LENGTH(x)       (sizeof(x)/sizeof(*x))
