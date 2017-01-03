@@ -1,3 +1,8 @@
+Fork of windowchef
+
+* 2bwm move/resize
+* send window to monitor
+
 Windowchef
 ==========
 
