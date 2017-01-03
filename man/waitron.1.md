@@ -26,9 +26,6 @@ anything on `stdout`.
 
 	false values: `false` | `f` | `no` | `n` | `0`
 
-* `MOUSE`:
-	move | resize
-
 ## COMMANDS
 
 * `window_move` <x> <y>:
@@ -109,14 +106,8 @@ anything on `stdout`.
 * `group_toggle` <group_nr>:
 	Toggle the <group_nr> group.
 
-* `mouse_start` <MOUSE>:
-	Start tracking the pointer to move/resize the mouse.
-
-* `mouse_stop`:
-	Stop tracking the pointer.
-
-* `mouse_toggle` <MOUSE>:
-	If already tracking, stop. Else, track.
+* `group_activate_specific` <group_nr>:
+	Activate group <group_nr> and deactivate the rest.
 
 * `wm_quit` <exit_status>:
 	Quit windowchef with exit_status <exit_status>.
@@ -129,6 +120,20 @@ anything on `stdout`.
 
 * `wm_config` <key> [<values>...]:
 	See [CONFIGURING][].
+
+## QUERYING
+
+Information about the current state of windowchef is made available through
+X properties of the root window. Example:
+
+```
+xprop -root WINDOWCHEF_ACTIVE_GROUPS
+```
+
+Here is a list of exposed properties:
+
+* `WINDOWCHEF_ACTIVE_GROUPS`:
+	An integer list of currently active groups.
 
 ## CONFIGURING
 
@@ -166,9 +171,14 @@ are:
 	activated group automatically. Recommended for people who like using
 	workspaces over groups.
 
+* `enable_borders` <BOOL>:
+	If true, border colors will be set each time a window gets/loses focus.
+	Setting it to false is useful when using another program to draw the borders
+	(example: `chwb2` from wmutils).
+
 ## SEE ALSO
 
-windowchef(1), sxhkd(1), wmutils(1), pfw(1), lsw(1)
+windowchef(1), sxhkd(1), wmutils(1), pfw(1), lsw(1), chwb2(1), lemonbar(1)
 
 ## AUTHOR
 

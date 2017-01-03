@@ -91,9 +91,8 @@ Features
 * cwm-like window groups
 	* Add or remove windows to a group
 	* Activate/Deactivate/Toggle a group
-* Workspaces instead of groups if you want
-* Mouse mode that can be either active or inactive. While active, the window is
-	moved/resized on click to the coordinates of the mouse pointer.
+	* groups can be "sticky": windows are assigned to the currently
+		selected group automatically
 * Simple and stylish solid-color border. Width can be configured
 * Gaps around the monitor and around the cells of the virtual grid(s).
 * Configuration script. Windowchef loads a given script at startup that can be
@@ -115,11 +114,8 @@ at the same time.
 Windowchef allows you to add/remove windows to/from groups, show groups, hide
 groups or toggle them.
 
-### Workspaces
-
-Instead of using groups, you may want to enable workspaces. Workspaces are, in
-fact, groups with the particularity that only one workspace can be active at the
-same time.
+You can also activate *sticky group mode*. When activated, new windows are
+automatically assigned to the currently selected group. Together with the `group_activate_specific` command (see `waitron(1)`), a workspace-like workflow can be achieved.
 
 ### Virtual grids
 
@@ -136,6 +132,19 @@ grid and put my window in the cell at `x = 0`, `y = 2`:
 |-------+--------+------|
 | xterm |        |      |
 +-----------------------+
+```
+
+Using the mouse
+---------------
+
+Windowchef doesn't offer any mouse moving/resizing features. You can emulate
+that with `xmmv(1)` and `xmrs(1)` from wmutils' `opt`.
+
+`.sxhkdrc`:
+
+```
+super + {_,alt +} t
+	{xmmv,xmrs}
 ```
 
 Bars and panels
@@ -157,5 +166,5 @@ the essentials of X11 development.
 
 Thanks to venam, Michaell Cardell and baskerville for the window managers they
 made: 2bwm, mcwm and bspwm (ironically they all end in wm :). Their
-programs were and still are a very good source of inspirationfor anyone who
+programs were and still are a very good source of inspiration for anyone who
 wants to write a window manager.

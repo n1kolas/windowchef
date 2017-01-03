@@ -59,6 +59,7 @@
     <a href="#OPTIONS">OPTIONS</a>
     <a href="#COMMON-DEFINITIONS">COMMON DEFINITIONS</a>
     <a href="#COMMANDS">COMMANDS</a>
+    <a href="#QUERYING">QUERYING</a>
     <a href="#CONFIGURING">CONFIGURING</a>
     <a href="#SEE-ALSO">SEE ALSO</a>
     <a href="#AUTHOR">AUTHOR</a>
@@ -99,7 +100,6 @@ anything on <code>stdout</code>.</p>
 <dt class="flush"><code>BOOL</code></dt><dd><p>  true values: <code>true</code> | <code>t</code> | <code>yes</code> | <code>y</code> | <code>1</code></p>
 
 <p>  false values: <code>false</code> | <code>f</code> | <code>no</code> | <code>n</code> | <code>0</code></p></dd>
-<dt class="flush"><code>MOUSE</code></dt><dd><p>  move | resize</p></dd>
 </dl>
 
 
@@ -142,15 +142,28 @@ anything on <code>stdout</code>.</p>
 <dt><code>group_activate</code> <var>group_nr</var></dt><dd><p>  Map all windows that belong to the <var>group_nr</var> group.</p></dd>
 <dt><code>group_deactivate</code> <var>group_nr</var></dt><dd><p>  Unmap all windows that belong to the <var>group_nr</var> group.</p></dd>
 <dt><code>group_toggle</code> <var>group_nr</var></dt><dd><p>  Toggle the <var>group_nr</var> group.</p></dd>
-<dt><code>mouse_start</code> <var>MOUSE</var></dt><dd><p>  Start tracking the pointer to move/resize the mouse.</p></dd>
-<dt><code>mouse_stop</code></dt><dd><p>  Stop tracking the pointer.</p></dd>
-<dt><code>mouse_toggle</code> <var>MOUSE</var></dt><dd><p>  If already tracking, stop. Else, track.</p></dd>
+<dt><code>group_activate_specific</code> <var>group_nr</var></dt><dd><p>  Activate group <var>group_nr</var> and deactivate the rest.</p></dd>
 <dt><code>wm_quit</code> <var>exit_status</var></dt><dd><p>  Quit windowchef with exit_status <var>exit_status</var>.</p></dd>
 <dt><code>wm_change_number_of_groups</code> <var>number_of_groups</var></dt><dd><p>  Change the number of maximum groups to <var>number_of_groups</var>.</p>
 
 <p>  Windows that belong to a group that has a <var>group_nr</var> greater or equal to
   <var>number_of_groups</var> will become orphaned.</p></dd>
 <dt><code>wm_config</code> <var>key</var> [<var>values</var>...]</dt><dd><p>  See <a href="#CONFIGURING" title="CONFIGURING" data-bare-link="true">CONFIGURING</a>.</p></dd>
+</dl>
+
+
+<h2 id="QUERYING">QUERYING</h2>
+
+<p>Information about the current state of windowchef is made available through
+X properties of the root window. Example:</p>
+
+<pre><code>xprop -root WINDOWCHEF_ACTIVE_GROUPS
+</code></pre>
+
+<p>Here is a list of exposed properties:</p>
+
+<dl>
+<dt><code>WINDOWCHEF_ACTIVE_GROUPS</code></dt><dd>  An integer list of currently active groups.</dd>
 </dl>
 
 
@@ -175,12 +188,15 @@ are:</p>
 <dt><code>sticky_windows</code> <var>BOOL</var></dt><dd><p>  If <var>sticky_windows</var> is true, new windows will be assigned to the last
   activated group automatically. Recommended for people who like using
   workspaces over groups.</p></dd>
+<dt><code>enable_borders</code> <var>BOOL</var></dt><dd><p>  If true, border colors will be set each time a window gets/loses focus.
+  Setting it to false is useful when using another program to draw the borders
+  (example: <code>chwb2</code> from wmutils).</p></dd>
 </dl>
 
 
 <h2 id="SEE-ALSO">SEE ALSO</h2>
 
-<p><span class="man-ref">windowchef<span class="s">(1)</span></span>, <span class="man-ref">sxhkd<span class="s">(1)</span></span>, <span class="man-ref">wmutils<span class="s">(1)</span></span>, <span class="man-ref">pfw<span class="s">(1)</span></span>, <span class="man-ref">lsw<span class="s">(1)</span></span></p>
+<p><span class="man-ref">windowchef<span class="s">(1)</span></span>, <span class="man-ref">sxhkd<span class="s">(1)</span></span>, <span class="man-ref">wmutils<span class="s">(1)</span></span>, <span class="man-ref">pfw<span class="s">(1)</span></span>, <span class="man-ref">lsw<span class="s">(1)</span></span>, <span class="man-ref">chwb2<span class="s">(1)</span></span>, <span class="man-ref">lemonbar<span class="s">(1)</span></span></p>
 
 <h2 id="AUTHOR">AUTHOR</h2>
 
@@ -189,7 +205,7 @@ are:</p>
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>October 2016</li>
+    <li class='tc'>December 2016</li>
     <li class='tr'>waitron(1)</li>
   </ol>
 

@@ -31,9 +31,7 @@ enum IPCCommand {
 	IPCGroupActivate,
 	IPCGroupDeactivate,
 	IPCGroupToggle,
-	IPCMouseStart,
-	IPCMouseStop,
-	IPCMouseToggle,
+	IPCGroupActivateSpecific,
 	IPCWMQuit,
 	IPCWMConfig,
 	NR_IPC_COMMANDS
@@ -49,6 +47,7 @@ enum IPCConfig {
 	IPCConfigGroupsNr,
 	IPCConfigEnableSloppyFocus,
 	IPCConfigStickyWindows,
+	IPCConfigEnableBorders,
 	NR_IPC_CONFIGS
 };
 

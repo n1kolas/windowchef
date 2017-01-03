@@ -61,6 +61,7 @@ struct conf {
 	uint32_t groups;
 	bool sloppy_focus;
 	bool sticky_windows;
+	bool borders;
 };
 
 typedef union {
